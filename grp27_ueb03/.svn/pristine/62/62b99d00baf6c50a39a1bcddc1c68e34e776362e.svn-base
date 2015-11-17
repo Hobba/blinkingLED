@@ -1,0 +1,243 @@
+package grp27_ueb03;
+
+/**
+ *
+ * @author Robin
+ */
+public class Element {
+
+    /**
+     * The value of the element
+     */
+    private int value;
+
+    /**
+     * The next element of the element
+     */
+    private Element next;
+
+    private static int sizeOfElements = 1;
+    private static int sumOfElements = 0;
+    private static String returningString = "{";
+    private static int elementCounter = 0;
+
+    /**
+     * Appends a new element at the end of all connected elements
+     *
+     * @param value the value of the new element that should be appended
+     * @return the previous element of new appended element
+     */
+    public Element appendElement(int value) {
+        if (this.next == null) {
+            Element newElement = new Element();
+            newElement.setValue(value);
+            this.setNext(newElement);
+        } else {
+            this.setNext(this.next.appendElement(value));
+        }
+        return this;
+    }
+
+    /**
+     * Inserts an new element with the committed value at the position so that
+     * the values of all connected element are in ascending order.
+     *
+     * @param value the value of the new element
+     * @return the new Element or the calling instance
+     */
+    public Element insertElement(int value) {
+        if (this.getValue() > value) {
+            Element newElement = new Element();
+            newElement.setValue(value);
+            newElement.setNext(this);
+            return newElement;
+        } else if (this.next == null) {
+            Element newElement = new Element();
+            newElement.setValue(value);
+            this.setNext(newElement);
+            return this;
+        } else {
+            this.setNext(this.next.insertElement(value));
+            return this;
+        }
+    }
+
+    /**
+     * Deletes the first element with the committed value. Starting from the
+     * instance that calls this method, the method interates recursivly through
+     * all appended elements until an element with the committed value is found.
+     * If there is no element with the committed value, the method returns the
+     * starting instance.
+     *
+     * @param value the value of the element that should be deleted
+     * @return the next Element of the deleted Element or, if no element was
+     * found with the committed value, the element itself
+     */
+    public Element deleteElement(int value) {
+        if (this.getValue() == value) {
+            return this.next;
+        } else if (this.next != null) {
+            this.setNext(this.next.deleteElement(value));
+        }
+        return this;
+    }
+
+    /**
+     * Gets the value of the current instance
+     *
+     * @return the value
+     */
+    public int getValue() {
+        return value;
+    }
+
+    /**
+     * Sets the value of the current instance
+     *
+     * @param value the value to set
+     */
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    /**
+     * Sets the value 'next' of the current instance to the inserted instance of
+     * type Element
+     *
+     * @param next the next to set
+     */
+    public void setNext(Element next) {
+        this.next = next;
+    }
+
+    public int size() {
+
+        if (this.next == null) {
+            return sizeOfElements++;
+        } else {
+            this.next.size();
+            return sizeOfElements++;
+        }
+
+    }
+
+    public int sum() {
+
+        if (this.next == null) {
+            return sumOfElements += this.getValue();
+        } else {
+            this.next.sum();
+            return sumOfElements += this.getValue();
+        }
+    }
+
+    public boolean isSorted() {
+        if (this.next == null) {
+            return true;
+        } else {
+            if (this.getValue() < this.next.getValue()) {
+                return this.next.isSorted();
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public boolean containsValue(int value) {
+
+        if (this.getValue() == value) {
+            return true;
+        } else {
+            if (this.next == null) {
+                return false;
+            } else {
+                return this.next.containsValue(value);
+            }
+
+        }
+    }
+
+    public String showValues() {
+
+        if (this.next == null) {
+            returningString += getValue();
+            returningString += "}";
+            return returningString;
+        } else {
+            returningString += getValue();
+            returningString += " ";
+            this.next.showValues();
+            return returningString;
+        }
+    }
+
+    public int getValueAt(int value) {
+        if (elementCounter == value) {
+            return getValue();
+        } else {
+            if (this.next == null) {
+                return Integer.MAX_VALUE;
+            } else {
+                elementCounter++;
+                return this.next.getValueAt(value);
+            }
+        }
+    }
+
+    public Element insertValueAt(int value, int index) {
+        if (elementCounter == index) {
+            Element newElement = new Element();
+            newElement.setValue(value);
+            newElement.setNext(this);
+            return newElement;
+        } else if (this.next == null) {
+            Element newElement = new Element();
+            newElement.setValue(value);
+            this.setNext(newElement);
+            return this;
+        } else {
+            elementCounter++;
+            this.setNext(this.next.insertValueAt(value, index));
+            return this;
+        }
+
+    }
+
+    public Element insertValueAtFront(int value) {
+
+        Element newElement = new Element();
+        newElement.setValue(value);
+        newElement.setNext(this);
+        return newElement;
+    }
+
+ 
+
+    public void resetElementCounter() {
+        elementCounter = 0;
+    }
+
+    public void resetReturningString() {
+        returningString = "{";
+    }
+
+    public void resetSizeOfElements() {
+        sizeOfElements = 1;
+    }
+
+    public void resetSumOfElements() {
+        sumOfElements = 0;
+    }
+
+    /*
+     * You can find this method in Prof. Häusleins slides but it is 
+     * not necessary for the exercise
+     *
+     public void printList() {
+     System.out.println(getValue());
+     if (this.next != null) {
+     this.next.printList();
+     }
+     }
+     */
+}
