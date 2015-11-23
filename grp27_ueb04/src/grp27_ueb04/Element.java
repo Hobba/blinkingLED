@@ -58,11 +58,11 @@ public class Element {
     }
 
     /**
-     * Deletes the first element with the committed value. Starting from the
-     * instance that calls this method, the method interates recursivly through
-     * all appended elements until an element with the committed value is found.
-     * If there is no element with the committed value, the method returns the
-     * starting instance.
+     * Deletes the first element with the committed value. List must be sorted.
+     * Starting from the instance that calls this method, the method interates
+     * recursivly through all appended elements until an element with the
+     * committed value is found, value is smaller than current value in the list
+     * or the end is reached.
      *
      * @param value the value of the element that should be deleted
      * @return the next Element of the deleted Element or, if no element was
@@ -71,7 +71,7 @@ public class Element {
     public Element deleteElement(int value) {
         if (this.getValue() == value) {
             return this.next;
-        } else if (this.next != null) {
+        } else if (this.next != null || this.getValue() > value) {
             this.setNext(this.next.deleteElement(value));
         }
         return this;
@@ -154,7 +154,9 @@ public class Element {
     }
 
     /**
-     * detemines if list contains an element with the input value
+     * detemines if list contains an element with the input value. List must be
+     * sorted. Searching for the value stops if last element is reached or value
+     * is smaller than current value in the list
      *
      * @param value the value that should be checked if its in the list
      * @return true if value is in the list, false if value isn't in the list
@@ -164,7 +166,7 @@ public class Element {
         if (this.getValue() == value) {
             return true;
         } else {
-            if (this.next == null) {
+            if (this.next == null || this.getValue() > value) {
                 return false;
             } else {
                 return this.next.containsValue(value);
@@ -183,7 +185,7 @@ public class Element {
         if (this.next == null) {
             return this.getValue() + "";
         } else {
-            return this.getValue() + " " + this.next.showValues() ;
+            return this.getValue() + " " + this.next.showValues();
         }
     }
 
@@ -245,15 +247,25 @@ public class Element {
         return newElement;
     }
 
-    /*
-     * You can find this method in Prof. Häusleins slides but it is 
-     * not necessary for the exercise
+    /**
+     * checks if the elements of two lists are the same. Checks first if the
+     * lists have the same size
      *
-     public void printList() {
-     System.out.println(getValue());
-     if (this.next != null) {
-     this.next.printList();
-     }
-     }
+     * @param other the other element
+     * @return true if all elements at the same position have the same value
      */
+    public boolean isSame(Element other) {
+
+        int zaehler = 0;
+
+        if (this.size() != other.size()) {
+            return false;
+        }
+
+        for (; zaehler < this.size() || this.getValueAt(zaehler) != other.getValueAt(zaehler); zaehler++) {
+
+        }
+        return zaehler == this.size();
+    }
+
 }
